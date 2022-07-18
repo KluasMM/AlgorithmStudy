@@ -1,6 +1,5 @@
-package com.mt.algorithm.algorithmstudy;
+package com.mt.algorithm.algorithmstudy.basic;
 
-import com.mt.algorithm.algorithmstudy.basic.PartOneArray;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
