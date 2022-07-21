@@ -178,4 +178,107 @@ public class PartTwoLinkedList {
 
         return next;
     }
+
+    /**
+     * 19. 删除链表的倒数第 N 个结点
+     * <p>
+     * 给你一个链表，删除链表的倒数第 n 个结点，并且返回链表的头结点。
+     *
+     * @param head
+     * @param n
+     * @return
+     */
+    public ListNode leetCode19(ListNode head, int n) {
+        /*
+         * 解题思路：虚拟头结点+快慢指针
+         *  慢指针要指向删除节点的上一个节点 这样就可以直接slow.next = slow.next.next;
+         *  最后返回虚拟头结点的下一个结点
+         */
+        ListNode dummy = new ListNode(0, head);
+        ListNode quick = head;
+        ListNode slow = dummy;
+
+        while (n > 0 && quick != null) {
+            quick = quick.next;
+            n--;
+        }
+
+        while (quick != null) {
+            quick = quick.next;
+            slow = slow.next;
+        }
+
+        slow.next = slow.next.next;
+
+        return dummy.next;
+    }
+
+    /**
+     * 面试题 02.07. 链表相交
+     * <p>
+     * 给你两个单链表的头节点 headA 和 headB ，请你找出并返回两个单链表相交的起始节点。如果两个链表没有交点，返回 null 。
+     *
+     * @param headA
+     * @param headB
+     * @return
+     */
+    public ListNode leetCode0207(ListNode headA, ListNode headB) {
+        /*
+         * 解题思路：
+         *  1先找出两个链表的长度差a
+         *  2然后长链表从head+a开始 短链表从head开始 同时向后走
+         *  3如果存在相同的就返回结点 如果两个指针最后都为null 返回null
+         *
+         * 注：找长度差的时候 短链表到头了将指针指向长链表
+         * 然后继续同时前进到长链接到头 将指针指向短链表 此时就达到了上述步骤2的效果
+         */
+        ListNode a = headA;
+        ListNode b = headB;
+
+        while (a != b) {
+            a = a == null ? headB : a.next;
+            b = b == null ? headA : b.next;
+        }
+
+        return a;
+    }
+
+    /**
+     * 142. 环形链表 II
+     * <p>
+     * 给定一个链表的头节点  head ，返回链表开始入环的第一个节点。 如果链表无环，则返回 null。
+     * <p>
+     * 如果链表中有某个节点，可以通过连续跟踪 next 指针再次到达，则链表中存在环。 为了表示给定链表中的环，评测系统内部使用整数 pos 来表示链表尾连接到链表中的位置（索引从 0 开始）。如果 pos 是 -1，则在该链表中没有环。注意：pos 不作为参数进行传递，仅仅是为了标识链表的实际情况。
+     * <p>
+     * 不允许修改 链表
+     *
+     * @param head
+     * @return
+     */
+    public ListNode leetCode142(ListNode head) {
+        ListNode slow = head;
+        ListNode fast = head;
+        boolean noCycle = true;
+
+        while (slow != null && fast != null && fast.next != null) {
+            slow = slow.next;
+            fast = fast.next.next;
+            if (slow == fast) {
+                noCycle = false;
+                break;
+            }
+        }
+
+        if (noCycle) {
+            return null;
+        }
+
+        fast = head;
+        while (fast != slow) {
+            fast = fast.next;
+            slow = slow.next;
+        }
+
+        return fast;
+    }
 }
