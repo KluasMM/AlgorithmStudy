@@ -18,12 +18,12 @@ import java.util.List;
 public class PartThreeHashTest {
 
     @Autowired
-    private PartThreeHash partThreeHash;
+    private PartThreeHash service;
 
     @Test
     void leetCode49Test() {
         String[] test = {"eat", "tea", "tan", "ate", "nat", "bat"};
-        List<List<String>> result = partThreeHash.leetCode49(test);
+        List<List<String>> result = service.leetCode49(test);
 
         System.out.println(result);
     }
@@ -32,7 +32,7 @@ public class PartThreeHashTest {
     void leetCode438Test() {
         String test1 = "cbaebabacd";
         String test2 = "abc";
-        List<Integer> result = partThreeHash.leetCode438(test1, test2);
+        List<Integer> result = service.leetCode438(test1, test2);
         Assertions.assertArrayEquals(Arrays.asList(0, 6).toArray(), result.toArray());
     }
 
@@ -40,7 +40,7 @@ public class PartThreeHashTest {
     void leetCode18Test() {
         int[] test1 = {0, 0, 0, 1000000000, 1000000000, 1000000000, 1000000000};
         int test2 = 1000000000;
-        List<List<Integer>> result = partThreeHash.leetCode18(test1, test2);
+        List<List<Integer>> result = service.leetCode18(test1, test2);
         Assertions.assertArrayEquals(Collections.emptyList().toArray(), result.toArray());
     }
 

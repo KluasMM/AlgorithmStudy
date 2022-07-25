@@ -14,11 +14,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 public class PartOneArrayTest {
 
     @Autowired
-    private PartOneArray partOneArray;
+    private PartOneArray service;
 
     @Test
     void leetCode844Test() {
-        boolean result = partOneArray.leetCode844("ab##", "c#d#");
+        boolean result = service.leetCode844("ab##", "c#d#");
 
         Assertions.assertTrue(result);
     }
@@ -26,7 +26,7 @@ public class PartOneArrayTest {
     @Test
     void leetCode977Test() {
         int[] test = {-4, -1, 0, 3, 10};
-        int[] result = partOneArray.leetCode977(test);
+        int[] result = service.leetCode977(test);
 
         int[] expect = {0, 1, 9, 16, 100};
         Assertions.assertArrayEquals(expect, result);
@@ -35,7 +35,7 @@ public class PartOneArrayTest {
     @Test
     void leetCode904Test() {
         int[] test = {1, 0, 3, 4, 3};
-        int result = partOneArray.leetCode904(test);
+        int result = service.leetCode904(test);
 
         Assertions.assertEquals(3, result);
     }
@@ -44,7 +44,7 @@ public class PartOneArrayTest {
     void leetCode76Test() {
         String s = "ADOBECODEBANC";
         String t = "ABC";
-        String result = partOneArray.leetCode76(s, t);
+        String result = service.leetCode76(s, t);
 
         Assertions.assertEquals("BANC", result);
     }

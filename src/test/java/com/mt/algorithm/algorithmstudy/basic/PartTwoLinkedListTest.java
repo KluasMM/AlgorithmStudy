@@ -13,7 +13,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 public class PartTwoLinkedListTest {
 
     @Autowired
-    private PartTwoLinkedList partTwoLinkedList;
+    private PartTwoLinkedList service;
 
     @Test
     void leetCode203Test() {
@@ -25,7 +25,7 @@ public class PartTwoLinkedListTest {
         PartTwoLinkedList.ListNode listNode2 = new PartTwoLinkedList.ListNode(2, listNode3);
         PartTwoLinkedList.ListNode head = new PartTwoLinkedList.ListNode(1, listNode2);
 
-        PartTwoLinkedList.ListNode result = partTwoLinkedList.leetCode203(head, 6);
+        PartTwoLinkedList.ListNode result = service.leetCode203(head, 6);
         System.out.println(result.toString());
     }
 
@@ -36,7 +36,7 @@ public class PartTwoLinkedListTest {
         PartTwoLinkedList.ListNode listNode2 = new PartTwoLinkedList.ListNode(2, listNode3);
         PartTwoLinkedList.ListNode head = new PartTwoLinkedList.ListNode(1, listNode2);
 
-        PartTwoLinkedList.ListNode result = partTwoLinkedList.leetCode24(head);
+        PartTwoLinkedList.ListNode result = service.leetCode24(head);
         System.out.println(result.toString());
     }
 
