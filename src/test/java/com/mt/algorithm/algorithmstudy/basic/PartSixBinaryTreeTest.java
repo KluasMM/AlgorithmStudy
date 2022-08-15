@@ -56,4 +56,26 @@ public class PartSixBinaryTreeTest {
         int result = service.leetCode111(root);
         Assertions.assertEquals(2, result);
     }
+
+    @Test
+    void leetCode222Test() {
+        PartSixBinaryTree.TreeNode node36 = new PartSixBinaryTree.TreeNode(6);
+        PartSixBinaryTree.TreeNode node35 = new PartSixBinaryTree.TreeNode(5);
+        PartSixBinaryTree.TreeNode node34 = new PartSixBinaryTree.TreeNode(4);
+        PartSixBinaryTree.TreeNode node23 = new PartSixBinaryTree.TreeNode(3, node36, null);
+        PartSixBinaryTree.TreeNode node22 = new PartSixBinaryTree.TreeNode(2, node34, node35);
+        PartSixBinaryTree.TreeNode root = new PartSixBinaryTree.TreeNode(1, node22, node23);
+
+        int result = service.leetCode222(root);
+        Assertions.assertEquals(6, result);
+    }
+
+    @Test
+    void leetCode98Test() {
+        PartSixBinaryTree.TreeNode node22 = new PartSixBinaryTree.TreeNode(1, null, null);
+        PartSixBinaryTree.TreeNode root = new PartSixBinaryTree.TreeNode(1, node22, null);
+
+        boolean result = service.leetCode98(root);
+        Assertions.assertFalse(result);
+    }
 }
