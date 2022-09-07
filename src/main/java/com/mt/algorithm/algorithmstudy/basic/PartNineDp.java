@@ -307,4 +307,146 @@ public class PartNineDp {
     private int getMin931(int left, int mid, int right) {
         return Math.min(Math.min(left, mid), right);
     }
+
+    /**
+     * 70. 爬楼梯
+     * <p>
+     * 假设你正在爬楼梯。需要 n 阶你才能到达楼顶。
+     * <p>
+     * 每次你可以爬 1 或 2 个台阶。你有多少种不同的方法可以爬到楼顶呢？
+     *
+     * @param n
+     * @return
+     */
+    public int leetCode70(int n) {
+        if (n < 3) return n;
+
+        int lastOne = 1;
+        int lastTwo = 2;
+        int result = 0;
+        for (int i = 3; i <= n; i++) {
+            result = lastOne + lastTwo;
+            lastOne = lastTwo;
+            lastTwo = result;
+        }
+
+        return result;
+    }
+
+    /**
+     * 746. 使用最小花费爬楼梯
+     * <p>
+     * 给你一个整数数组 cost ，其中 cost[i] 是从楼梯第 i 个台阶向上爬需要支付的费用。
+     * 一旦你支付此费用，即可选择向上爬一个或者两个台阶。
+     * <p>
+     * 你可以选择从下标为 0 或下标为 1 的台阶开始爬楼梯。
+     * <p>
+     * 请你计算并返回达到楼梯顶部的最低花费。
+     *
+     * @param cost
+     * @return
+     */
+    public int leetCode746(int[] cost) {
+        int n = cost.length;
+        int[] dp = new int[n];
+
+        //base case
+        dp[0] = cost[0];
+        dp[1] = cost[1];
+
+        for (int i = 2; i < n; i++) {
+            dp[i] = Math.min(dp[i - 2], dp[i - 1]) + cost[i];
+        }
+
+        return Math.min(dp[n - 1], dp[n - 2]);
+    }
+
+    /**
+     * 62. 不同路径
+     * <p>
+     * 一个机器人位于一个 m x n 网格的左上角 （起始点在下图中标记为 “Start” ）。
+     * <p>
+     * 机器人每次只能向下或者向右移动一步。机器人试图达到网格的右下角（在下图中标记为 “Finish” ）。
+     * <p>
+     * 问总共有多少条不同的路径？
+     *
+     * @param m
+     * @param n
+     * @return
+     */
+    public int leetCode62(int m, int n) {
+        /*
+         * 解题思路：
+         *  一个点只可能从它左面过来或者从它上面过来
+         *  得出动态转移方程：dp[i][j] = dp[i - 1][j] + dp[i][j - 1];
+         *
+         *  棋盘最左侧的一列和最上面的一行 只能是竖着一直走或者横着一直走
+         *  所以dp[i][0] = 1; dp[0][i] = 1;
+         *
+         *  base case dp[0][0] = 1; 上面初始值边界时已经包含了
+         */
+        int[][] dp = new int[m][n];
+
+        for (int i = 0; i < m; i++) {
+            dp[i][0] = 1;
+        }
+        for (int i = 0; i < n; i++) {
+            dp[0][i] = 1;
+        }
+
+        for (int i = 1; i < m; i++) {
+            for (int j = 1; j < n; j++) {
+                dp[i][j] = dp[i - 1][j] + dp[i][j - 1];
+            }
+        }
+
+        return dp[m - 1][n - 1];
+    }
+
+    /**
+     * 63. 不同路径 II
+     * <p>
+     * 一个机器人位于一个 m x n 网格的左上角 （起始点在下图中标记为 “Start” ）。
+     * <p>
+     * 机器人每次只能向下或者向右移动一步。机器人试图达到网格的右下角（在下图中标记为 “Finish”）。
+     * <p>
+     * 现在考虑网格中有障碍物。那么从左上角到右下角将会有多少条不同的路径？
+     * <p>
+     * 网格中的障碍物和空位置分别用 1 和 0 来表示。
+     *
+     * @param obstacleGrid
+     * @return
+     */
+    public int leetCode63(int[][] obstacleGrid) {
+        /*
+         * 解题思路：leetCode62升级版
+         *  注意点
+         *  1:初始化的第一行和第一列的时候 出现障碍物后面的全部为0 因为走不到了
+         *  2.计算的时候也是 obstacleGrid[i][j]==1时 dp[i][j]=0
+         *  因为int的默认值就是0 所以上述两种赋值0的情况 不用写
+         */
+        int x = obstacleGrid[0].length;
+        int y = obstacleGrid.length;
+        int[][] dp = new int[y][x];
+
+        for (int i = 0; i < x; i++) {
+            if (obstacleGrid[0][i] == 1) break;
+            dp[0][i] = 1;
+        }
+
+        for (int i = 0; i < y; i++) {
+            if (obstacleGrid[i][0] == 1) break;
+            dp[i][0] = 1;
+        }
+
+        for (int i = 1; i < y; i++) {
+            for (int j = 1; j < x; j++) {
+                if (obstacleGrid[i][j] == 0) {
+                    dp[i][j] = dp[i - 1][j] + dp[i][j - 1];
+                }
+            }
+        }
+
+        return dp[y - 1][x - 1];
+    }
 }
