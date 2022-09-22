@@ -449,4 +449,207 @@ public class PartNineDp {
 
         return dp[y - 1][x - 1];
     }
+
+    /**
+     * 343. 整数拆分
+     * <p>
+     * 给定一个正整数 n ，将其拆分为 k 个 正整数 的和（ k >= 2 ），并使这些整数的乘积最大化。
+     * <p>
+     * 返回 你可以获得的最大乘积 。
+     *
+     * @param n
+     * @return
+     */
+    public int leetCode343(int n) {
+        /*
+         * 解题思路:
+         *  dp[n]代表当前数最大乘积
+         *  i可以拆为两个部分:i-j 和 j  (j<i-1)
+         *  j * (i - j) 是单纯的把整数拆分为两个数相乘，而j * dp[i - j]是拆分成两个以及两个以上的个数相乘。
+         *  dp[i]的最大值是 遍历j并取 两数相乘的结果j*(i-j) 或 j与dp[i-j]的乘积 中最大值的最大值
+         *  因为要求每层中最大的结果 所以要遍历j 取最大值 所以是最大值的最大值
+         */
+        int[] dp = new int[n + 1];
+
+        //base case
+        dp[2] = 1;
+
+        for (int i = 3; i <= n; i++) {
+            for (int j = 1; j < i - 1; j++) {
+                dp[i] = Math.max(dp[i], Math.max((i - j) * j, j * dp[i - j]));
+            }
+        }
+
+        return dp[n];
+    }
+
+    /**
+     * 96. 不同的二叉搜索树
+     * <p>
+     * 给你一个整数 n ，求恰由 n 个节点组成且节点值从 1 到 n 互不相同的 二叉搜索树 有多少种？
+     * 返回满足题意的二叉搜索树的种数。
+     *
+     * @param n
+     * @return
+     */
+    public int leetCode96(int n) {
+        /*
+         * 解题思路：
+         *  dp[i]代表n=i时的结果
+         *  由于后续结果肯定要要依赖前面的结果进行计算 所以是自底向上遍历求i
+         *  每当i增加时,由于i为最大值 增加方式有两种：
+         *      1.在不破坏原有结构的基础上 有两种：
+         *          1.1:在i-1的右子树上直接添加
+         *          1.2:直接以i为根节点，将原有的树作为左子树添加到i上
+         *          综上：情况1的数量为dp[i-1]*2
+         *      2.破坏原有的基础 那就说明i必须满足两点
+         *          第一点：i的左子树必须要有值（即i的下面）
+         *          第二点：i必须为某个值的右子树（即i的上面）
+         *          所以：以i为分界点，i的上面有j个元素，下面就有i-1-j个元素（因为i自身占一个元素）
+         *               j要小于i-1（因为j=i-1时，i下面就没有元素了，就和1.1的情况一样了）
+         *          综上：情况2的数量为遍历j从1到i-2的dp[j] * dp[i - 1 - j]的总和（即上下结果乘积）
+         *  最终计算结果就是情况1+情况2的结果
+         */
+        if (n == 1) return 1;
+        int[] dp = new int[n + 1];
+
+        //base case
+        dp[1] = 1;
+        dp[2] = 2;
+
+        for (int i = 3; i <= n; i++) {
+            int sum = 0;
+            //计算情况2的总和
+            for (int j = 1; j < i - 1; j++) {
+                sum += dp[j] * dp[i - 1 - j];
+            }
+            //最终结果为情况1+情况2的结果
+            dp[i] = 2 * dp[i - 1] + sum;
+        }
+
+        return dp[n];
+    }
+
+    /**
+     * 416. 分割等和子集
+     * <p>
+     * 给你一个 只包含正整数 的 非空 数组 nums 。
+     * 请你判断是否可以将这个数组分割成两个子集，使得两个子集的元素和相等。
+     *
+     * @param nums
+     * @return
+     */
+    public boolean leetCode416(int[] nums) {
+        /*
+         * 解题思路：
+         *  01背包问题 target等于总和除以2
+         *  最后结果 就是dp[nums.length - 1][target]是否等于target
+         */
+        int sum = Arrays.stream(nums).sum();
+        //特判 和为奇数 直接返回false
+        if (sum % 2 != 0) return false;
+
+        int target = sum / 2;
+
+        int[][] dp = new int[nums.length][target + 1];
+
+        //base case
+        for (int j = nums[0]; j <= target; j++) {
+            dp[0][j] = nums[0];
+        }
+
+        for (int i = 1; i < nums.length; i++) {
+            for (int j = 1; j <= target; j++) {
+                if (j < nums[i]) {
+                    dp[i][j] = dp[i - 1][j];
+                } else {
+                    dp[i][j] = Math.max(dp[i - 1][j], dp[i - 1][j - nums[i]] + nums[i]);
+                }
+            }
+        }
+
+        return dp[nums.length - 1][target] == target;
+    }
+
+    /**
+     * 1049. 最后一块石头的重量 II
+     * <p>
+     * 有一堆石头，用整数数组 stones 表示。其中 stones[i] 表示第 i 块石头的重量。
+     * <p>
+     * 每一回合，从中选出任意两块石头，然后将它们一起粉碎。假设石头的重量分别为 x 和 y，且 x <= y。
+     * 那么粉碎的可能结果如下：
+     * 如果 x == y，那么两块石头都会被完全粉碎；
+     * 如果 x != y，那么重量为 x 的石头将会完全粉碎，而重量为 y 的石头新重量为 y-x。
+     * 最后，最多只会剩下一块 石头。返回此石头 最小的可能重量 。如果没有石头剩下，就返回 0。
+     *
+     * @param stones
+     * @return
+     */
+    public int leetCode1049(int[] stones) {
+        int sum = Arrays.stream(stones).sum();
+        int target = sum / 2;
+
+        int[][] dp = new int[stones.length][target + 1];
+
+        //base case
+        for (int j = stones[0]; j <= target; j++) {
+            dp[0][j] = stones[0];
+        }
+
+        for (int i = 1; i < stones.length; i++) {
+            for (int j = 1; j <= target; j++) {
+                if (j < stones[i]) {
+                    dp[i][j] = dp[i - 1][j];
+                } else {
+                    dp[i][j] = Math.max(dp[i - 1][j], dp[i - 1][j - stones[i]] + stones[i]);
+                }
+            }
+        }
+
+        return sum - 2 * dp[stones.length - 1][target];
+    }
+
+    /**
+     * 494. 目标和
+     * <p>
+     * 给你一个整数数组 nums 和一个整数 target 。
+     * <p>
+     * 向数组中的每个整数前添加 '+' 或 '-' ，然后串联起所有整数，可以构造一个 表达式 ：
+     * <p>
+     * 例如，nums = [2, 1] ，可以在 2 之前添加 '+' ，在 1 之前添加 '-' ，然后串联起来得到表达式 "+2-1" 。
+     * 返回可以通过上述方法构造的、运算结果等于 target 的不同 表达式 的数目。
+     *
+     * @param nums
+     * @param target
+     * @return
+     */
+    public int leetCode494(int[] nums, int target) {
+        /*
+         * 解题思路：
+         *  left:正数和;right:负数和
+         *      left+right=sum
+         *      left-right=target
+         *      二元一次求解 left=(sum+target)/2
+         *  背包组合问题公式:dp[j]+=dp[j-nums[i]]
+         */
+        int sum = Math.abs(Arrays.stream(nums).sum());
+        //特判
+        if ((sum + target) % 2 == 1) return 0;
+        if (Math.abs(target) > sum) return 0;
+
+        int size = (sum + target) / 2;
+        //dp[j]代表当前填满容量为j的包有多少种方法
+        int[] dp = new int[size + 1];
+
+        //base case:填满容量为0的包只有一种方法 就是不填
+        dp[0] = 1;
+
+        for (int i = 0; i < nums.length; i++) {
+            for (int j = size; j >= nums[i]; j--) {
+                dp[j] += dp[j - nums[i]];
+            }
+        }
+
+        return dp[size];
+    }
 }

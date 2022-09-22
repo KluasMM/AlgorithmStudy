@@ -29,4 +29,19 @@ public class PartNineDpTest {
         int result = service.leetCode354(test);
         Assertions.assertEquals(3, result);
     }
+
+    @Test
+    public void leetCode1049Test() {
+        int[] testArr = {1, 2, 4, 8, 16, 32, 64, 12, 25, 51};
+        int result = service.leetCode1049(testArr);
+        Assertions.assertEquals(1, result);
+    }
+
+    @Test
+    public void leetCode494Test() {
+        int[] testArr = {1, 1, 1, 1, 1};
+        int result = service.leetCode494(testArr, 3);
+        Assertions.assertEquals(5, result);
+    }
+
 }
