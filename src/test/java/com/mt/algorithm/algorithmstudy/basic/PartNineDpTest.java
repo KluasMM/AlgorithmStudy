@@ -44,4 +44,11 @@ public class PartNineDpTest {
         Assertions.assertEquals(5, result);
     }
 
+    @Test
+    public void leetCode518Test() {
+        int[] testArr = {1, 2, 5};
+        int result = service.leetCode518(5, testArr);
+        Assertions.assertEquals(4, result);
+    }
+
 }

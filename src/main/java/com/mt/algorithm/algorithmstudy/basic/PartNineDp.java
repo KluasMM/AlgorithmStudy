@@ -652,4 +652,96 @@ public class PartNineDp {
 
         return dp[size];
     }
+
+    /**
+     * 474. 一和零
+     * <p>
+     * 给你一个二进制字符串数组 strs 和两个整数 m 和 n 。
+     * <p>
+     * 请你找出并返回 strs 的最大子集的长度，该子集中 最多 有 m 个 0 和 n 个 1 。
+     * <p>
+     * 如果 x 的所有元素也是 y 的元素，集合 x 是集合 y 的 子集 。
+     *
+     * @param strs
+     * @param m
+     * @param n
+     * @return
+     */
+    public int leetCode474(String[] strs, int m, int n) {
+        int[][][] dp = new int[strs.length][m + 1][n + 1];
+
+        //base case
+        int[] baseResult = cacl474(strs[0]);
+        for (int i = baseResult[0]; i <= m; i++) {
+            for (int j = baseResult[1]; j <= n; j++) {
+                dp[0][i][j] = 1;
+            }
+        }
+
+        for (int i = 1; i < strs.length; i++) {
+            int[] resultI = cacl474(strs[i]);
+            for (int im = 0; im <= m; im++) {
+                for (int in = 0; in <= n; in++) {
+                    if (im >= resultI[0] && in >= resultI[1]) {
+                        dp[i][im][in] = Math.max(
+                                dp[i - 1][im - resultI[0]][in - resultI[1]] + 1,
+                                dp[i - 1][im][in]
+                        );
+                    } else {
+                        dp[i][im][in] = dp[i - 1][im][in];
+                    }
+                }
+            }
+        }
+
+        return dp[strs.length - 1][m][n];
+    }
+
+    private int[] cacl474(String str) {
+        int[] result = new int[2];
+        for (int i = 0; i < str.length(); i++) {
+            if (str.charAt(i) == '0') {
+                result[0] += 1;
+            } else {
+                result[1] += 1;
+            }
+        }
+        return result;
+    }
+
+    /**
+     * 518. 零钱兑换 II
+     * <p>
+     * 给你一个整数数组 coins 表示不同面额的硬币，另给一个整数 amount 表示总金额。
+     * <p>
+     * 请你计算并返回可以凑成总金额的硬币组合数。如果任何硬币组合都无法凑出总金额，返回 0 。
+     * <p>
+     * 假设每一种面额的硬币有无限个。 
+     * <p>
+     * 题目数据保证结果符合 32 位带符号整数。
+     *
+     * @param amount
+     * @param coins
+     * @return
+     */
+    public int leetCode518(int amount, int[] coins) {
+        /*
+         * 解题思路：完全背包问题
+         *  但是先遍历金额还是先遍历金币要想清楚
+         *  本题要先遍历金币 因为1,2和2,1对于本题来说是一种情况
+         */
+        //递推表达式
+        int[] dp = new int[amount + 1];
+        //初始化dp数组，表示金额为0时只有一种情况，也就是什么都不装
+        dp[0] = 1;
+        for (int i = 0; i < coins.length; i++) {
+            for (int j = coins[i]; j <= amount; j++) {
+                dp[j] += dp[j - coins[i]];
+                System.out.printf("i=%s,j=%s,dp[%s]=dp[%s]+dp[%s],result=%s%n",
+                        i, j, j, j, j - coins[i], dp[j]);
+            }
+        }
+        return dp[amount];
+    }
+
 }
