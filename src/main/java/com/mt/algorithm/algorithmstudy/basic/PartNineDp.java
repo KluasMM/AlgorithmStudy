@@ -3,6 +3,7 @@ package com.mt.algorithm.algorithmstudy.basic;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * @Description
@@ -726,9 +727,11 @@ public class PartNineDp {
      */
     public int leetCode518(int amount, int[] coins) {
         /*
-         * 解题思路：完全背包问题
+         * 解题思路：完全背包问题之组合问题
          *  但是先遍历金额还是先遍历金币要想清楚
+         *  先遍历金币是组合问题（即不区分顺序1,2和2,1是一种答案） 先遍历金额是排序问题(区分顺序)
          *  本题要先遍历金币 因为1,2和2,1对于本题来说是一种情况
+         *  leetCode377则是先遍历先遍历金额
          */
         //递推表达式
         int[] dp = new int[amount + 1];
@@ -742,6 +745,176 @@ public class PartNineDp {
             }
         }
         return dp[amount];
+    }
+
+    /**
+     * 377. 组合总和 Ⅳ
+     * <p>
+     * 给你一个由 不同 整数组成的数组 nums ，和一个目标整数 target 。
+     * 请你从 nums 中找出并返回总和为 target 的元素组合的个数。
+     * <p>
+     * 题目数据保证答案符合 32 位整数范围。
+     *
+     * @param nums
+     * @param target
+     * @return
+     */
+    public int leetCode377(int[] nums, int target) {
+        /*
+         * 解题思路：完全背包问题之排列问题
+         * 具体分析见leetCode518
+         * 大神分析：爬楼梯问题 楼梯的阶数一共为target，一次可以走的步数为nums[i]。 一共有多少种走法？
+         */
+        int[] dp = new int[target + 1];
+
+        dp[0] = 1;
+
+        for (int j = 1; j <= target; j++) {
+            for (int num : nums) {
+                if (j >= num) {
+                    dp[j] += dp[j - num];
+                }
+            }
+        }
+
+        return dp[target];
+    }
+
+    /**
+     * 279. 完全平方数
+     * <p>
+     * 给你一个整数 n ，返回 和为 n 的完全平方数的最少数量 。
+     * <p>
+     * 完全平方数 是一个整数，其值等于另一个整数的平方；换句话说，其值等于一个整数自乘的积。
+     * 例如，1、4、9 和 16 都是完全平方数，而 3 和 11 不是。
+     *
+     * @param n
+     * @return
+     */
+    public int leetCode279(int n) {
+        if (n == 1 || n == 10000) return 1;
+
+        int[] dp = new int[n + 1];
+        Arrays.fill(dp, Integer.MAX_VALUE);
+
+        //base case
+        dp[0] = 0;
+
+        for (int i = 1; i * i <= n; i++) {
+            int square = i * i;
+            for (int j = square; j <= n; j++) {
+                //剪枝判断 可以没有
+                if (dp[j - square] != Integer.MAX_VALUE) {
+                    dp[j] = Math.min(dp[j], dp[j - square] + 1);
+                }
+            }
+        }
+
+        return dp[n];
+    }
+
+    /**
+     * 139. 单词拆分
+     * <p>
+     * 给你一个字符串 s 和一个字符串列表 wordDict 作为字典。请你判断是否可以利用字典中出现的单词拼接出 s 。
+     * <p>
+     * 注意：不要求字典中出现的单词全部都使用，并且字典中的单词可以重复使用。
+     *
+     * @param s
+     * @param wordDict
+     * @return
+     */
+    public boolean leetCode139(String s, List<String> wordDict) {
+        int len = s.length();
+        boolean[] dp = new boolean[len + 1];
+        dp[0] = true;
+
+        for (int j = 1; j <= len; j++) {
+            for (String word : wordDict) {
+                int wordLen = word.length();
+                if (j >= wordLen
+                        && dp[j - wordLen]
+                        && s.substring(j - wordLen, j).equals(word)) {
+                    dp[j] = true;
+                }
+            }
+        }
+
+        return dp[len];
+    }
+
+    /**
+     * 198. 打家劫舍
+     * <p>
+     * 你是一个专业的小偷，计划偷窃沿街的房屋。每间房内都藏有一定的现金，
+     * 影响你偷窃的唯一制约因素就是相邻的房屋装有相互连通的防盗系统，
+     * 如果两间相邻的房屋在同一晚上被小偷闯入，系统会自动报警。
+     * <p>
+     * 给定一个代表每个房屋存放金额的非负整数数组，计算你 不触动警报装置的情况下 ，一夜之内能够偷窃到的最高金额。
+     *
+     * @param nums
+     * @return
+     */
+    public int leetCode198(int[] nums) {
+        //常规解题方案
+        int len = nums.length;
+        if (len == 0) return 0;
+        if (len == 1) return nums[0];
+
+        int[] dp = new int[len];
+        //base case
+        dp[0] = nums[0];
+        dp[1] = Math.max(nums[0], nums[1]);
+
+        for (int i = 2; i < len; i++) {
+            dp[i] = Math.max(dp[i - 1], dp[i - 2] + nums[i]);
+        }
+
+        return dp[len - 1];
+
+        //滚动数组 因为当前结果一直依赖前两个结果 所以只需要记住前两个结果的值就好了 然后替换前两个值
+        //return rob213(nums, 0, len - 1);
+    }
+
+    /**
+     * 213. 打家劫舍 II
+     * <p>
+     * 你是一个专业的小偷，计划偷窃沿街的房屋，每间房内都藏有一定的现金。
+     * 这个地方所有的房屋都 围成一圈 ，这意味着第一个房屋和最后一个房屋是紧挨着的。
+     * 同时，相邻的房屋装有相互连通的防盗系统，如果两间相邻的房屋在同一晚上被小偷闯入，系统会自动报警 。
+     * <p>
+     * 给定一个代表每个房屋存放金额的非负整数数组，计算你 在不触动警报装置的情况下 ，今晚能够偷窃到的最高金额。
+     *
+     * @param nums
+     * @return
+     */
+    public int leetCode213(int[] nums) {
+        /*
+         * 解题思路：leetCode198升级版
+         *  最终结果为 去掉第一个元素的leetCode198和去掉最后一个元素的leetCode198的最大值
+         */
+        int len = nums.length;
+        if (len == 0) return 0;
+        if (len == 1) return nums[0];
+        if (len == 2) return Math.max(nums[0], nums[1]);
+
+        return Math.max(
+                rob213(nums, 0, len - 2),
+                rob213(nums, 1, len - 1)
+        );
+    }
+
+    private int rob213(int[] nums, int start, int end) {
+        int first = nums[start];
+        int second = Math.max(nums[start], nums[start + 1]);
+
+        for (int i = start + 2; i <= end; i++) {
+            int temp = Math.max(second, first + nums[i]);
+            first = second;
+            second = temp;
+        }
+
+        return second;
     }
 
 }
