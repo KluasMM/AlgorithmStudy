@@ -1,5 +1,7 @@
 package com.mt.algorithm.algorithmstudy.basic;
 
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
@@ -12,6 +14,21 @@ import java.util.List;
  */
 @Service
 public class PartNineDp {
+
+    /**
+     * Definition for a binary tree node.
+     */
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public class TreeNode {
+        int val;
+        TreeNode left;
+        TreeNode right;
+
+        TreeNode(int val) {
+            this.val = val;
+        }
+    }
 
     /**
      * 509. 斐波那契数
@@ -915,6 +932,203 @@ public class PartNineDp {
         }
 
         return second;
+    }
+
+    /**
+     * 337. 打家劫舍 III
+     * <p>
+     * 小偷又发现了一个新的可行窃的地区。这个地区只有一个入口，我们称之为 root 。
+     * <p>
+     * 除了 root 之外，每栋房子有且只有一个“父“房子与之相连。一番侦察之后，
+     * 聪明的小偷意识到“这个地方的所有房屋的排列类似于一棵二叉树”。
+     * 如果 两个直接相连的房子在同一天晚上被打劫 ，房屋将自动报警。
+     * <p>
+     * 给定二叉树的 root 。返回 在不触动警报的情况下 ，小偷能够盗取的最高金额 。
+     *
+     * @param root
+     * @return
+     */
+    public int leetCode337(TreeNode root) {
+        /*
+         * 解题思路：二叉树+动态规划
+         *  dp定义：选择当前节点的最大值 和 不选择当前节点的最大值 所以需要一个二维数组去存储
+         *      选择当前节点的最大值=当前节点的值+左子树不选择当前节点的值+右子树不选择当期节点的值
+         *      不选择当前节点的最大值=左子树两种情况的最大值+右子树两种情况的最大值
+         *          因为不选择当前节点，左右子树可以选但不是必须选 所以选择左右子树的两种情况的最大值来计算
+         *  因为需要二叉树递归产生的结果 所以选择后续遍历
+         */
+        int[] result = rob337(root);
+        return Math.max(result[0], result[1]);
+    }
+
+    private int[] rob337(TreeNode root) {
+        int[] result = new int[2];
+        if (root == null) return result;
+
+        int[] leftResult = rob337(root.left);
+        int[] rightResult = rob337(root.right);
+
+        //选择当前结点 = 不选左子树 + 不选右子树 + 当前结点值
+        result[1] = leftResult[0] + rightResult[0] + root.val;
+        //不选择当前结点 = max(左子树两种情况) + max(右子树两种情况)
+        result[0] = Math.max(leftResult[0], leftResult[1]) + Math.max(rightResult[0], rightResult[1]);
+
+        return result;
+    }
+
+    /**
+     * 121. 买卖股票的最佳时机
+     * 给定一个数组 prices ，它的第 i 个元素 prices[i] 表示一支给定股票第 i 天的价格。
+     * <p>
+     * 你只能选择 某一天 买入这只股票，并选择在 未来的某一个不同的日子 卖出该股票。
+     * 设计一个算法来计算你所能获取的最大利润。
+     * <p>
+     * 返回你可以从这笔交易中获取的最大利润。如果你不能获取任何利润，返回 0 。
+     *
+     * @param prices
+     * @return
+     */
+    public int leetCode121(int[] prices) {
+        /*
+         * 解题思路：动态规划dp[i][0]、dp[i][1]
+         *  dp[i][0]=第i天没持有股票的最大利润
+         *      如果昨天也没持有 就等于昨天dp[i-1][0]
+         *      如果昨天持有了 今天每持有说明今天卖了 所以等于dp[i-1][1]+prices[i]
+         *      最后取结果大的作为dp[i][0]的结果
+         *  dp[i][1]=第i天持有股票的最大利润
+         *      如果昨天没持有 说明今天刚买 但只能买一次 所以等于0-prices[i]
+         *      如果昨天也持有了 就等于昨天dp[i - 1][1]
+         *  最后结果就是最后一天没持有的结果 因为持有不卖肯定是负数
+         */
+        /*int[][] dp = new int[prices.length][2];
+
+        //base case
+        dp[0][0] = 0;
+        dp[0][1] = -prices[0];
+
+        for (int i = 1; i < prices.length; i++) {
+            dp[i][0] = Math.max(dp[i - 1][0], dp[i - 1][1] + prices[i]);
+            dp[i][1] = Math.max(dp[i - 1][1], -prices[i]);
+        }
+
+        return dp[prices.length - 1][0];*/
+
+        //因为上述过程只和前一天结果有关 可以用滚动数组
+        int[] dp = new int[2];
+
+        dp[1] = -prices[0];
+
+        for (int i = 1; i < prices.length; i++) {
+            dp[0] = Math.max(dp[0], dp[1] + prices[i]);
+            dp[1] = Math.max(dp[1], -prices[i]);
+        }
+
+        return dp[0];
+    }
+
+    /**
+     * 122. 买卖股票的最佳时机 II
+     * <p>
+     * 给你一个整数数组 prices ，其中 prices[i] 表示某支股票第 i 天的价格。
+     * <p>
+     * 在每一天，你可以决定是否购买和/或出售股票。你在任何时候 最多 只能持有 一股 股票。
+     * 你也可以先购买，然后在 同一天 出售。
+     * <p>
+     * 返回 你能获得的 最大 利润 。
+     *
+     * @param prices
+     * @return
+     */
+    public int leetCode122(int[] prices) {
+        /*
+         * 解题思路：leetCode121升级版
+         *  与121不同的是 可以多次购买
+         *  所以dp[i][1]就是在原有已经盈利的基础上再去减去今天的股票价钱即dp[i][0] - prices[i];
+         *  最后因为也是依赖前一天的数据 所以可以转换成滚动数组
+         */
+        /*int[][] dp = new int[prices.length][2];
+
+        dp[0][0] = 0;
+        dp[0][1] = -prices[0];
+
+        for (int i = 1; i < prices.length; i++) {
+            dp[i][0] = Math.max(dp[i - 1][0], dp[i - 1][1] + prices[i]);
+            dp[i][1] = Math.max(dp[i - 1][1], dp[i - 1][0] - prices[i]);
+        }
+
+        return dp[prices.length - 1][0]*/
+        ;
+
+        int[] dp = new int[2];
+
+        //base case
+        dp[1] = -prices[0];
+
+        for (int i = 1; i < prices.length; i++) {
+            dp[0] = Math.max(dp[0], dp[1] + prices[i]);
+            dp[1] = Math.max(dp[1], dp[0] - prices[i]);
+        }
+
+        return dp[0];
+    }
+
+    /**
+     * 123. 买卖股票的最佳时机 III
+     * <p>
+     * 给定一个数组，它的第 i 个元素是一支给定的股票在第 i 天的价格。
+     * <p>
+     * 设计一个算法来计算你所能获取的最大利润。你最多可以完成 两笔 交易。
+     * <p>
+     * 注意：你不能同时参与多笔交易（你必须在再次购买前出售掉之前的股票）。
+     *
+     * @param prices
+     * @return
+     */
+    public int leetCode123(int[] prices) {
+        /*
+         * 解题思路：
+         *  dp数据第二位表示4种状态
+         *      状态1:第一次买入
+         *      状态2:第一次卖出
+         *      状态3:第二次买入
+         *      状态4:第二次卖出
+         *  初始化：
+         *      第一次买入就是-prices[0]
+         *      第二次买入也是-prices[0] 很重要
+         *          在第一次交易取到收益之前 dp[状态2]和dp[状态4]是一样的
+         *          如果未初始化 则dp[状态4]处于只卖出的钱 没计算本金
+         */
+        /*int len = prices.length;
+        int[][] dp = new int[len][5];
+
+        //base case
+        dp[0][1] = -prices[0];
+        dp[0][3] = -prices[0];
+
+        for (int i = 1; i < len; i++) {
+            dp[i][1] = Math.max(dp[i - 1][1], -prices[i]);
+            dp[i][2] = Math.max(dp[i - 1][2], dp[i - 1][1] + prices[i]);
+            dp[i][3] = Math.max(dp[i - 1][3], dp[i - 1][2] - prices[i]);
+            dp[i][4] = Math.max(dp[i - 1][4], dp[i - 1][3] + prices[i]);
+        }
+
+        return dp[len - 1][4];*/
+
+        //滚动数组实现
+        int[] dp = new int[4];
+
+        //base case
+        dp[0] = -prices[0];
+        dp[2] = -prices[0];
+
+        for (int i = 1; i < prices.length; i++) {
+            dp[0] = Math.max(dp[0], -prices[i]);
+            dp[1] = Math.max(dp[1], dp[0] + prices[i]);
+            dp[2] = Math.max(dp[2], dp[1] - prices[i]);
+            dp[3] = Math.max(dp[3], dp[2] + prices[i]);
+        }
+
+        return dp[3];
     }
 
 }
