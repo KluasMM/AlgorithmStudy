@@ -1131,4 +1131,174 @@ public class PartNineDp {
         return dp[3];
     }
 
+    /**
+     * 188. 买卖股票的最佳时机 IV
+     * <p>
+     * 给定一个整数数组 prices ，它的第 i 个元素 prices[i] 是一支给定的股票在第 i 天的价格。
+     * <p>
+     * 设计一个算法来计算你所能获取的最大利润。你最多可以完成 k 笔交易。
+     * <p>
+     * 注意：你不能同时参与多笔交易（你必须在再次购买前出售掉之前的股票）。
+     *
+     * @param k
+     * @param prices
+     * @return
+     */
+    public int leetCode188(int k, int[] prices) {
+        /*
+         * 解题思路：leetCode123升级版
+         *  dp数组表示状态,有k比交易就有2k个状态（买入和卖出）双数买入、单数卖出
+         *  第一天买入是没有前置盈利的 所以dp[0]=Math.max(dp[0], -prices[i])
+         *  其余每次买入都要计算之前的盈利 所以dp[j] = Math.max(dp[j], dp[j - 1] - prices[i]);
+         *  每次卖出dp[j] = Math.max(dp[j], dp[j - 1] + prices[i])
+         */
+        int kLen = 2 * k;
+        int[] dp = new int[kLen];
+
+        int ori = -prices[0];
+        for (int i = 0; i < kLen; i++) {
+            if (i % 2 == 0) dp[i] = ori;
+        }
+
+        for (int i = 1; i < prices.length; i++) {
+            dp[0] = Math.max(dp[0], -prices[i]);
+            for (int j = 1; j < kLen; j++) {
+                if (j % 2 == 0) {
+                    dp[j] = Math.max(dp[j], dp[j - 1] - prices[i]);
+                } else {
+                    dp[j] = Math.max(dp[j], dp[j - 1] + prices[i]);
+                }
+            }
+        }
+
+        return dp[kLen - 1];
+    }
+
+    /**
+     * 309. 最佳买卖股票时机含冷冻期
+     * <p>
+     * 给定一个整数数组prices，其中第  prices[i] 表示第 i 天的股票价格 。​
+     * <p>
+     * 设计一个算法计算出最大利润。在满足以下约束条件下，你可以尽可能地完成更多的交易（多次买卖一支股票）:
+     * <p>
+     * 卖出股票后，你无法在第二天买入股票 (即冷冻期为 1 天)。
+     * 注意：你不能同时参与多笔交易（你必须在再次购买前出售掉之前的股票）。
+     *
+     * @param prices
+     * @return
+     */
+    public int leetCode309(int[] prices) {
+        int[] dp = new int[4];
+
+        dp[0] = -prices[0];
+        dp[1] = 0;
+        for (int i = 1; i <= prices.length; i++) {
+            // 使用临时变量来保存dp[0], dp[2]
+            // 因为马上dp[0]和dp[2]的数据都会变
+            int temp = dp[0];
+            int temp1 = dp[2];
+            dp[0] = Math.max(dp[0], Math.max(dp[3], dp[1]) - prices[i - 1]);
+            dp[1] = Math.max(dp[1], dp[3]);
+            dp[2] = temp + prices[i - 1];
+            dp[3] = temp1;
+        }
+        return Math.max(dp[3], Math.max(dp[1], dp[2]));
+    }
+
+    /**
+     * 714. 买卖股票的最佳时机含手续费
+     * <p>
+     * 给定一个整数数组 prices，其中 prices[i]表示第 i 天的股票价格 ；整数 fee 代表了交易股票的手续费用。
+     * <p>
+     * 你可以无限次地完成交易，但是你每笔交易都需要付手续费。如果你已经购买了一个股票，
+     * 在卖出它之前你就不能再继续购买股票了。
+     * <p>
+     * 返回获得利润的最大值。
+     * <p>
+     * 注意：这里的一笔交易指买入持有并卖出股票的整个过程，每笔交易你只需要为支付一次手续费。
+     *
+     * @param prices
+     * @param fee
+     * @return
+     */
+    public int leetCode714(int[] prices, int fee) {
+        /*
+         * 解题思路：leetCode122升级版
+         *  在leetCode122的基础上 增加了卖出时候扣除手续费
+         */
+        int[] dp = new int[2];
+
+        dp[1] = -prices[0];
+
+        for (int i = 1; i < prices.length; i++) {
+            dp[0] = Math.max(dp[0], dp[1] + prices[i] - fee);
+            dp[1] = Math.max(dp[1], dp[0] - prices[i]);
+        }
+
+        return dp[0];
+    }
+
+    /**
+     * 674. 最长连续递增序列
+     * <p>
+     * 给定一个未经排序的整数数组，找到最长且 连续递增的子序列，并返回该序列的长度。
+     * <p>
+     * 连续递增的子序列 可以由两个下标 l 和 r（l < r）确定，如果对于每个 l <= i < r，都有 nums[i] < nums[i + 1] ，
+     * 那么子序列 [nums[l], nums[l + 1], ..., nums[r - 1], nums[r]] 就是连续递增子序列。
+     *
+     * @param nums
+     * @return
+     */
+    public int leetCode674(int[] nums) {
+        /*
+         * 解题思路：
+         *  当前比前一个值大就计数加一，比前一个值小则重新计数
+         *  pre记录上一个值，temp代表计数
+         */
+        int result = 1;
+        int temp = 0;
+        int pre = Integer.MIN_VALUE;
+
+        for (int i = 0; i < nums.length; i++) {
+            if (nums[i] > pre) {
+                result = Math.max(result, ++temp);
+            } else {
+                temp = 1;
+            }
+            pre = nums[i];
+        }
+
+        return result;
+    }
+
+    /**
+     * 718. 最长重复子数组
+     * <p>
+     * 给两个整数数组 nums1 和 nums2 ，返回 两个数组中 公共的 、长度最长的子数组的长度 。
+     *
+     * @param nums1
+     * @param nums2
+     * @return
+     */
+    public int leetCode718(int[] nums1, int[] nums2) {
+        /*
+         * 解题思路：
+         *  dp[i][j]表示以i和j结尾的最长公共子串
+         *  状态转移方程：dp[i][j] = dp[i-1][j-1]+1
+         *  这样base case不好算 所以整体右移 dp[i + 1][j + 1] = dp[i][j] + 1;
+         */
+        int result = 0;
+        int[][] dp = new int[nums1.length + 1][nums2.length + 1];
+
+        for (int i = 0; i < nums1.length; i++) {
+            for (int j = 0; j < nums2.length; j++) {
+                if (nums1[i] == nums2[j]) {
+                    dp[i + 1][j + 1] = dp[i][j] + 1;
+                    result = Math.max(result, dp[i + 1][j + 1]);
+                }
+            }
+        }
+
+        return result;
+    }
 }
