@@ -1282,10 +1282,7 @@ public class PartNineDp {
      */
     public int leetCode718(int[] nums1, int[] nums2) {
         /*
-         * 解题思路：
-         *  dp[i][j]表示以i和j结尾的最长公共子串
-         *  状态转移方程：dp[i][j] = dp[i-1][j-1]+1
-         *  这样base case不好算 所以整体右移 dp[i + 1][j + 1] = dp[i][j] + 1;
+         * 解题思路：参考算法笔记 动态规划.子序列问题
          */
         int result = 0;
         int[][] dp = new int[nums1.length + 1][nums2.length + 1];
@@ -1300,5 +1297,377 @@ public class PartNineDp {
         }
 
         return result;
+    }
+
+    /**
+     * 1143. 最长公共子序列
+     * <p>
+     * 给定两个字符串 text1 和 text2，返回这两个字符串的最长 公共子序列 的长度。如果不存在 公共子序列 ，返回 0 。
+     * <p>
+     * 一个字符串的 子序列 是指这样一个新的字符串：
+     * 它是由原字符串在不改变字符的相对顺序的情况下删除某些字符（也可以不删除任何字符）后组成的新字符串。
+     * <p>
+     * 例如，"ace" 是 "abcde" 的子序列，但 "aec" 不是 "abcde" 的子序列。
+     * 两个字符串的 公共子序列 是这两个字符串所共同拥有的子序列。
+     *
+     * @param text1
+     * @param text2
+     * @return
+     */
+    public int leetCode1143(String text1, String text2) {
+        /*
+         * 解题思路：参考算法笔记 动态规划.子序列问题
+         */
+        int len1 = text1.length();
+        int len2 = text2.length();
+        int[][] dp = new int[len1 + 1][len2 + 1];
+
+        for (int i = 1; i <= len1; i++) {
+            for (int j = 1; j <= len2; j++) {
+                if (text1.charAt(i - 1) == text2.charAt(j - 1)) {
+                    dp[i][j] = dp[i - 1][j - 1] + 1;
+                } else {
+                    dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
+                }
+            }
+        }
+
+        return dp[len1][len2];
+    }
+
+    /**
+     * 1035. 不相交的线
+     * <p>
+     * 在两条独立的水平线上按给定的顺序写下 nums1 和 nums2 中的整数。
+     * <p>
+     * 现在，可以绘制一些连接两个数字 nums1[i] 和 nums2[j] 的直线，这些直线需要同时满足满足：
+     * <p>
+     *  nums1[i] == nums2[j]
+     * 且绘制的直线不与任何其他连线（非水平线）相交。
+     * 请注意，连线即使在端点也不能相交：每个数字只能属于一条连线。
+     * <p>
+     * 以这种方法绘制线条，并返回可以绘制的最大连线数。
+     *
+     * @param nums1
+     * @param nums2
+     * @return
+     */
+    public int leetCode1035(int[] nums1, int[] nums2) {
+        /*
+         * 解题思路:
+         *  这道题和leetCode1143(最长公共子序列)解法一模一样
+         *  不相交其实就是公共子串 因为子串是按顺序的 所以不会相交
+         */
+        int len1 = nums1.length;
+        int len2 = nums2.length;
+        int[][] dp = new int[len1 + 1][len2 + 1];
+
+        for (int i = 1; i <= len1; i++) {
+            for (int j = 1; j <= len2; j++) {
+                if (nums1[i - 1] == nums2[j - 1]) {
+                    dp[i][j] = dp[i - 1][j - 1] + 1;
+                } else {
+                    dp[i][j] = Math.max(dp[i][j - 1], dp[i - 1][j]);
+                }
+            }
+        }
+
+        return dp[len1][len2];
+    }
+
+    /**
+     * 53. 最大子数组和
+     * <p>
+     * 给你一个整数数组 nums ，请你找出一个具有最大和的连续子数组（子数组最少包含一个元素），返回其最大和。
+     * <p>
+     * 子数组 是数组中的一个连续部分。
+     *
+     * @param nums
+     * @return
+     */
+    public int leetCode53(int[] nums) {
+        /*
+         * 解题思路：
+         *  依次叠加每个数并记录和sum
+         *  当遍历到i时，如果sum+i还不如i自身大
+         *  那就说明前面的数都是累赘 直接从当前i作为第一个叠加元素继续向后遍历
+         */
+        int result = nums[0];
+        int sum = nums[0];
+
+        for (int i = 1; i < nums.length; i++) {
+            sum = Math.max(sum + nums[i], nums[i]);
+            result = Math.max(sum, result);
+        }
+
+        return result;
+    }
+
+    /**
+     * 392. 判断子序列
+     * <p>
+     * 给定字符串 s 和 t ，判断 s 是否为 t 的子序列。
+     * <p>
+     * 字符串的一个子序列是原始字符串删除一些（也可以不删除）字符而不改变剩余字符相对位置形成的新字符串。
+     * （例如，"ace"是"abcde"的一个子序列，而"aec"不是）。
+     * <p>
+     * 进阶：
+     * <p>
+     * 如果有大量输入的 S，称作 S1, S2, ... , Sk 其中 k >= 10亿，你需要依次检查它们是否为 T 的子序列。
+     * 在这种情况下，你会怎样改变代码？
+     *
+     * @param s
+     * @param t
+     * @return
+     */
+    public boolean leetCode392(String s, String t) {
+        /*
+         * 解题思路:
+         *  不考虑进阶问题 直接双指针就可以
+         *  考虑进阶问题 其实就是最长重复子数组问题(leetCode1143)
+         */
+        int len1 = s.length();
+        int len2 = t.length();
+        int[][] dp = new int[len1 + 1][len2 + 1];
+
+        for (int i = 1; i <= len1; i++) {
+            for (int j = 1; j <= len2; j++) {
+                if (s.charAt(i - 1) == t.charAt(j - 1)) {
+                    dp[i][j] = dp[i - 1][j - 1] + 1;
+                } else {
+                    //leetCode1143这里是dp[i][j] = Math.max(dp[i][j - 1], dp[i - 1][j]);
+                    //不同点在于1143不知道谁是谁的子序列 此题知道s是t的子序列
+                    dp[i][j] = dp[i][j - 1];
+                }
+            }
+        }
+
+        return dp[len1][len2] == len1;
+
+        //双指针
+        /*if (s.length() == 0) return true;
+        if (t.length() == 0) return false;
+
+        int j = 0;
+        for (int i = 0; i < t.length(); i++) {
+            if (s.charAt(j) == t.charAt(i)) {
+                if (j == s.length() - 1) return true;
+                j++;
+            }
+        }
+
+        return false;*/
+    }
+
+    /**
+     * 115. 不同的子序列
+     * <p>
+     * 给定一个字符串 s 和一个字符串 t ，计算在 s 的子序列中 t 出现的个数。
+     * <p>
+     * 字符串的一个 子序列 是指，通过删除一些（也可以不删除）字符且不干扰剩余字符相对位置所组成的新字符串。
+     * （例如，"ACE" 是 "ABCDE" 的一个子序列，而 "AEC" 不是）
+     * <p>
+     * 题目数据保证答案符合 32 位带符号整数范围。
+     *
+     * @param s
+     * @param t
+     * @return
+     */
+    public int leetCode115(String s, String t) {
+        int len1 = s.length();
+        int len2 = t.length();
+        int[][] dp = new int[len1 + 1][len2 + 1];
+
+        //base case 子串为空时 结果都是1
+        for (int i = 0; i <= len1; i++) {
+            dp[i][0] = 1;
+        }
+
+        for (int i = 1; i <= len1; i++) {
+            for (int j = 1; j <= len2; j++) {
+                if (s.charAt(i - 1) == t.charAt(j - 1)) {
+                    dp[i][j] = dp[i - 1][j - 1] + dp[i - 1][j];
+                } else {
+                    dp[i][j] = dp[i - 1][j];
+                }
+            }
+        }
+
+        return dp[len1][len2];
+    }
+
+    /**
+     * 583. 两个字符串的删除操作
+     * <p>
+     * 给定两个单词 word1 和 word2 ，返回使得 word1 和  word2 相同所需的最小步数。
+     * <p>
+     * 每步 可以删除任意一个字符串中的一个字符。
+     *
+     * @param word1
+     * @param word2
+     * @return
+     */
+    public int leetCode583(String word1, String word2) {
+        /*
+         * 解题思路：就是求最长公共子序列 leetCode1143
+         */
+        int len1 = word1.length();
+        int len2 = word2.length();
+        int[][] dp = new int[len1 + 1][len2 + 1];
+
+        for (int i = 1; i <= len1; i++) {
+            for (int j = 1; j <= len2; j++) {
+                if (word1.charAt(i - 1) == word2.charAt(j - 1)) {
+                    dp[i][j] = dp[i - 1][j - 1] + 1;
+                } else {
+                    dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
+                }
+            }
+        }
+
+        return len1 + len2 - 2 * dp[len1][len2];
+    }
+
+    /**
+     * 72. 编辑距离
+     * <p>
+     * 给你两个单词 word1 和 word2， 请返回将 word1 转换成 word2 所使用的最少操作数  。
+     * <p>
+     * 你可以对一个单词进行如下三种操作：
+     * <p>
+     * 插入一个字符
+     * 删除一个字符
+     * 替换一个字符
+     *
+     * @param word1
+     * @param word2
+     * @return
+     */
+    public int leetCode72(String word1, String word2) {
+        /*
+         * 解题思路：
+         *  可以套用子序问题模板
+         *  字符相等时，由于不用操作 所以dp[i][j] = dp[i - 1][j - 1]
+         *  字符不相等时，分为增删改三种情况
+         *      删除：在删除word1或者word2一个字符基础上加一（即本次操作）则为当前结果
+         *           dp[i][j] = dp[i][j - 1] + 1 或 dp[i - 1][j] + 1
+         *      增加：增加和删除是一样的，给word1增加字符和给word2删除字符是一个效果
+         *      修改：修改则是将当前两个字符修改为一样的
+         *           dp[i][j] = dp[i - 1][j - 1] + 1
+         *      综上所述：取三种情况最小的
+         *  初始化：当一个字符串为空时，最小操作就是逐一删除另一个字符串的所有字符
+         */
+        int len1 = word1.length();
+        int len2 = word2.length();
+        int[][] dp = new int[len1 + 1][len2 + 1];
+
+        //base case
+        for (int i = 0; i <= len1; i++) {
+            dp[i][0] = i;
+        }
+        for (int j = 0; j <= len2; j++) {
+            dp[0][j] = j;
+        }
+
+        for (int i = 1; i <= len1; i++) {
+            for (int j = 1; j <= len2; j++) {
+                if (word1.charAt(i - 1) == word2.charAt(j - 1)) {
+                    dp[i][j] = dp[i - 1][j - 1];
+                } else {
+                    dp[i][j] = Math.min(
+                            Math.min(dp[i][j - 1] + 1, dp[i - 1][j] + 1),
+                            dp[i - 1][j - 1] + 1
+                    );
+                }
+            }
+        }
+
+        return dp[len1][len2];
+    }
+
+    /**
+     * 647. 回文子串
+     * <p>
+     * 给你一个字符串 s ，请你统计并返回这个字符串中 回文子串 的数目。
+     * <p>
+     * 回文字符串 是正着读和倒过来读一样的字符串。
+     * <p>
+     * 子字符串 是字符串中的由连续字符组成的一个序列。
+     * <p>
+     * 具有不同开始位置或结束位置的子串，即使是由相同的字符组成，也会被视作不同的子串。
+     *
+     * @param s
+     * @return
+     */
+    public int leetCode647(String s) {
+        /*
+         * 解题思路：中心扩展（下文详解） 或动态规划（参考代码随想录）
+         *  依次将每个字符作为回文字符串的中心 向两侧扩张
+         *  每扩张一次 如果相等则结果加一 不等则退出 计算下一个字符
+         *  回文字符串的中心有两种情况：
+         *      长度为奇数：那么当前字符作为中心向两侧扩展
+         *      长度为偶数：当前字符加上下一个字符作为中心向两次扩展
+         *  可以把两种情况写成一种写法：左指针不变，右指针一次等于左指针一次等于左指针加一
+         *      左指针left = i / 2
+         *      右指针right = left + i % 2
+         */
+        int result = 0;
+        int len = s.length();
+
+        //因为存在两种情况 所以i要遍历到2 * len
+        for (int i = 0; i <= 2 * len; i++) {
+            //每两步前进一次 可以保证两种情况
+            int left = i / 2;
+            //区分两种情况 等于左指针和左指针加一
+            int right = left + i % 2;
+
+            while (left >= 0 && right < len && s.charAt(left) == s.charAt(right)) {
+                result++;
+                left--;
+                right++;
+            }
+        }
+
+        return result;
+    }
+
+    /**
+     * 516. 最长回文子序列
+     * <p>
+     * 给你一个字符串 s ，找出其中最长的回文子序列，并返回该序列的长度。
+     * <p>
+     * 子序列定义为：不改变剩余字符顺序的情况下，删除某些字符或者不删除任何字符形成的一个序列。
+     *
+     * @param s
+     * @return
+     */
+    public int leetCode516(String s) {
+        /*
+         * 解题思路：
+         *  dp含义：字符串i到j的最长回文子序列
+         *  dp方程：
+         *      当i和j的字符相等时 结果等于不包含i和j的字符串的结果加2（加的是i和j）
+         *      不相等时，结果向左进一位或者向右退一位的最大值
+         *  dp初始化：dp[i][i]都为1 因为自身就是一个回文串
+         *  遍历顺序：因为dp[i][j]依赖于i+1和j-1 所以i到倒序遍历 j正序遍历
+         *  最后的结果就是整个字符串的结果 也就是从0到len-1
+         */
+        int len = s.length();
+        int[][] dp = new int[len + 1][len + 1];
+
+        for (int i = len - 1; i >= 0; i--) {
+            //base case
+            dp[i][i] = 1;
+
+            for (int j = i + 1; j < len; j++) {
+                if (s.charAt(i) == s.charAt(j)) {
+                    dp[i][j] = dp[i + 1][j - 1] + 2;
+                } else {
+                    dp[i][j] = Math.max(dp[i][j - 1], dp[i + 1][j]);
+                }
+            }
+        }
+
+        return dp[0][len - 1];
     }
 }
