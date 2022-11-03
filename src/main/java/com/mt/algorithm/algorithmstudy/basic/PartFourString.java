@@ -4,6 +4,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @Description
@@ -235,5 +237,45 @@ public class PartFourString {
     public boolean leetCode459(String s) {
         //TODO kmp算法
         return true;
+    }
+
+    /**
+     * 3. 无重复字符的最长子串
+     * <p>
+     * 给定一个字符串 s ，请你找出其中不含有重复字符的 最长子串 的长度。
+     *
+     * @param s
+     * @return
+     */
+    public int leetCode3(String s) {
+        /*
+         * 解题思路：滑动窗口
+         *  用map记录元素对应的索引位置
+         *      当get元素结果为-1时 不存在 右指针+1
+         *      当get元素结果>-1时
+         *          结果小于left 说明重复的元素在窗口外 替换索引位置
+         *          结果大于等于left 重复元素在窗口内 结算结果 重新赋值左指针到结果+1位置上
+         *  最后还要再计算一次结果
+         */
+        //特判
+        int len = s.length();
+        if (len <= 1) return len;
+
+        int result = 0;
+        int left = 0;
+        int right = 0;
+        //用来存储元素对应的索引位置
+        Map<Character, Integer> map = new HashMap<>(len);
+
+        for (; right < len; right++) {
+            int index = map.getOrDefault(s.charAt(right), -1);
+            if (index >= left) {
+                result = Math.max(result, right - left);
+                left = index + 1;
+            }
+            map.put(s.charAt(right), right);
+        }
+
+        return Math.max(result, right - left);
     }
 }
