@@ -110,7 +110,7 @@ public class PartTwoLinkedList {
          *  初始化pre=null cur=head temp = cur.next
          *  用temp临时存储结点的next数据 然后将结点的next指向pre 依次执行
          */
-        /*return reverse(null, head);*/
+        /*return reverse206(null, head);*/
 
         /*
          * 解题思路2：自身递归
@@ -145,14 +145,14 @@ public class PartTwoLinkedList {
         return pre;
     }
 
-    private ListNode reverse(ListNode pre, ListNode current) {
+    private ListNode reverse206(ListNode pre, ListNode current) {
         if (current == null) {
             return pre;
         }
 
         ListNode temp = current.next;
         current.next = pre;
-        return reverse(current, temp);
+        return reverse206(current, temp);
     }
 
     /**
@@ -280,5 +280,82 @@ public class PartTwoLinkedList {
         }
 
         return fast;
+    }
+
+    /**
+     * 25. K 个一组翻转链表
+     * <p>
+     * 给你链表的头节点 head ，每 k 个节点一组进行翻转，请你返回修改后的链表。
+     * <p>
+     * k 是一个正整数，它的值小于或等于链表的长度。如果节点总数不是 k 的整数倍，那么请将最后剩余的节点保持原有顺序。
+     * <p>
+     * 你不能只是单纯的改变节点内部的值，而是需要实际进行节点交换。
+     *
+     * @param head
+     * @param k
+     * @return
+     */
+    public ListNode leetCode25(ListNode head, int k) {
+        /*
+         * 解题思路：
+         *  将每个k区间链表分割独立出来并记录区间链表的前后节点，然后翻转区间链表，重新连接前后节点
+         *  节点定义：
+         *      dummy记录头结点的pre节点 用于指向最终结果
+         *      pre指向区间链表的前置节点，next指向区间链表的后置节点
+         *      begin代表区间聊表的头结点，end代表尾结点
+         *  操作步骤：
+         *      end和pre都处在前置节点上，然后end向后走k步，不足k步直接结束（因为前一步已经连接好了，剩下的也不用翻转）
+         *      此时end已经走到了区间链表的尾部，头部start等于pre.next
+         *      用next记录一下end.next，然后断开end，就得到了一个独立的区间链表
+         *      然后翻转此区间链表，此时start到了尾部，end到了头部，翻转返回的是end节点
+         *      重新连接区间链表，前置节点pre与end相连，start与后置节点next相连
+         *      最后，将pre和end都指向区间链表尾部（即start），最为下一个区间链表的前置节点
+         */
+
+        //虚拟头结点 用于指向最终结果
+        ListNode dummy = new ListNode(0, head);
+        //每个区间链表的前置节点
+        ListNode pre = dummy;
+        //区间链表的尾结点 初始位置与pre保持一致
+        ListNode end = dummy;
+
+        while (end.next != null) {
+            //尾结点归位 如果中途end为空 直接结束
+            for (int i = 0; i < k && end != null; i++) end = end.next;
+            if (end == null) break;
+
+            //头结点归位
+            ListNode start = pre.next;
+            //区间链表的后置节点
+            ListNode next = end.next;
+            //断开连接 使区间链表独立（前后都没有连接了）
+            end.next = null;
+
+            //翻转区间链表 此时头为end，尾为start
+            reverse25(start);
+            //翻转结束返回了头结点 可以直接简化写法 省去pre.next = end这一步
+//            pre.next = leetCode206(start);
+
+            //重新连接这个独立的区间链表
+            pre.next = end;
+            start.next = next;
+
+            //重新定位pre和end 指向区间链表的尾结点
+            pre = end = start;
+        }
+
+        return dummy.next;
+    }
+
+    private ListNode reverse25(ListNode head) {
+        ListNode pre = null;
+        while (head != null) {
+            ListNode next = head.next;
+            head.next = pre;
+            pre = head;
+            head = next;
+        }
+
+        return pre;
     }
 }

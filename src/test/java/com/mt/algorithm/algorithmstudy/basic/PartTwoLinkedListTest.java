@@ -40,4 +40,21 @@ public class PartTwoLinkedListTest {
         System.out.println(result.toString());
     }
 
+    @Test
+    void leetCode25Test() {
+        PartTwoLinkedList.ListNode listNode7 = new PartTwoLinkedList.ListNode(7, null);
+        PartTwoLinkedList.ListNode listNode6 = new PartTwoLinkedList.ListNode(6, listNode7);
+        PartTwoLinkedList.ListNode listNode5 = new PartTwoLinkedList.ListNode(5, listNode6);
+        PartTwoLinkedList.ListNode listNode4 = new PartTwoLinkedList.ListNode(4, listNode5);
+        PartTwoLinkedList.ListNode listNode3 = new PartTwoLinkedList.ListNode(3, listNode4);
+        PartTwoLinkedList.ListNode listNode2 = new PartTwoLinkedList.ListNode(2, listNode3);
+        PartTwoLinkedList.ListNode head = new PartTwoLinkedList.ListNode(1, listNode2);
+
+        PartTwoLinkedList.ListNode result = service.leetCode25(head, 2);
+        while(result != null) {
+            System.out.println(result.val);
+            result = result.next;
+        }
+    }
+
 }
