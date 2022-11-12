@@ -335,4 +335,67 @@ public class PartOneArray {
 
         return result;
     }
+
+    /**
+     * 33. 搜索旋转排序数组
+     * <p>
+     * 整数数组 nums 按升序排列，数组中的值 互不相同 。
+     * <p>
+     * 在传递给函数之前，nums 在预先未知的某个下标 k（0 <= k < nums.length）上进行了 旋转，
+     * 使数组变为 [nums[k], nums[k+1], ..., nums[n-1], nums[0], nums[1], ..., nums[k-1]]（下标 从 0 开始 计数）。
+     * 例如， [0,1,2,4,5,6,7] 在下标 3 处经旋转后可能变为 [4,5,6,7,0,1,2] 。
+     * <p>
+     * 给你 旋转后 的数组 nums 和一个整数 target ，
+     * 如果 nums 中存在这个目标值 target ，则返回它的下标，否则返回 -1 。
+     * <p>
+     * 你必须设计一个时间复杂度为 O(log n) 的算法解决此问题。
+     *
+     * @param nums
+     * @param target
+     * @return
+     */
+    public int leetCode33(int[] nums, int target) {
+        /*
+         * 解题思路：
+         *  看到题目要求O(log n)肯定就是二分法了
+         *  二分之后 分为两种情况
+         *      要么左侧有序 要么右侧有序
+         *      区分有序无序的方式是 用mid和0两个索引的值比较 nums[mid] >= nums[0]代表左侧有序
+         *  如果左侧有序 target又在左侧区间里 那么就正常二分
+         *  如果右侧有序 target又在右侧区间里 也正常二分
+         *  不在有序区间 那么就是在无序区间里 重复上述操作即可
+         */
+        int right = nums.length - 1;
+        int left = 0;
+
+        while (left <= right) {
+            int mid = (left + right) / 2;
+            if (nums[mid] == target) return mid;
+
+            //如果左侧有序
+            if (nums[mid] >= nums[0]) {
+                //此时target也在左侧区间 那么就正常二分下去
+                if (nums[0] <= target && target < nums[mid]) {
+                    right = mid - 1;
+                }
+                //不在左侧就在右侧呗
+                else {
+                    left = mid + 1;
+                }
+            }
+            //左侧无序就代表右侧有序
+            else {
+                //如果此时target也在右侧 那么就正常二分下去
+                if (nums[mid] < target && target <= nums[right]) {
+                    left = mid + 1;
+                }
+                //不在右侧就在左侧
+                else {
+                    right = mid - 1;
+                }
+            }
+        }
+
+        return -1;
+    }
 }

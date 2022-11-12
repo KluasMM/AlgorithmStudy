@@ -358,4 +358,40 @@ public class PartTwoLinkedList {
 
         return pre;
     }
+
+    /**
+     * 21. 合并两个有序链表
+     * <p>
+     * 将两个升序链表合并为一个新的 升序 链表并返回。新链表是通过拼接给定的两个链表的所有节点组成的。
+     *
+     * @param list1
+     * @param list2
+     * @return
+     */
+    public ListNode leetCode21(ListNode list1, ListNode list2) {
+        ListNode result = null;
+        ListNode dummy = new ListNode(0, result);
+
+        merge21(list1, list2, dummy);
+        return dummy.next;
+    }
+
+    private void merge21(ListNode list1, ListNode list2, ListNode result) {
+        if (list1 == null) {
+            result.next = list2;
+            return;
+        }
+        if (list2 == null) {
+            result.next = list1;
+            return;
+        }
+
+        if (list1.val <= list2.val) {
+            result.next = list1;
+            merge21(list1.next, list2, result.next);
+        } else {
+            result.next = list2;
+            merge21(list1, list2.next, result.next);
+        }
+    }
 }
