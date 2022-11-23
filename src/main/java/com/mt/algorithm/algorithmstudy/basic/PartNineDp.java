@@ -1670,4 +1670,45 @@ public class PartNineDp {
 
         return dp[0][len - 1];
     }
+
+    /**
+     * 5. 最长回文子串
+     * <p>
+     * 给你一个字符串 s，找到 s 中最长的回文子串。
+     *
+     * @param s
+     * @return
+     */
+    public String leetCode5(String s) {
+        /*
+         * 解题思路：最长回文子序列leetCode516 + 子序列问题（笔记）
+         */
+        int len = s.length();
+        if (len <= 1) return s;
+
+        boolean[][] dp = new boolean[len][len];
+        int left = 0;
+        int right = 0;
+        int max = 1;
+
+        for (int i = len - 1; i >= 0; i--) {
+            //base case
+            dp[i][i] = true;
+
+            for (int j = i + 1; j < len; j++) {
+                if (s.charAt(i) == s.charAt(j)) {
+                    //当前结果依赖i+1到j-1 如果i和j挨着 i和j代表的元素又相等 那么dp[i][j]也等于true
+                    dp[i][j] = dp[i + 1][j - 1] || i == j - 1;
+
+                    if (dp[i][j] && (j - i + 1) > max) {
+                        max = j - i + 1;
+                        left = i;
+                        right = j;
+                    }
+                }
+            }
+        }
+
+        return s.substring(left, right + 1);
+    }
 }
