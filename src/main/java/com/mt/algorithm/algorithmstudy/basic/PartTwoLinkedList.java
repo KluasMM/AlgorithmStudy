@@ -1,6 +1,5 @@
 package com.mt.algorithm.algorithmstudy.basic;
 
-import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.springframework.stereotype.Service;
@@ -16,7 +15,6 @@ public class PartTwoLinkedList {
     /**
      * Definition for singly-linked list.
      */
-    @AllArgsConstructor
     @NoArgsConstructor
     @ToString
     public static class ListNode {
@@ -398,5 +396,55 @@ public class PartTwoLinkedList {
             result.next = list2;
             merge21(list1, list2.next, result.next);
         }
+    }
+
+    /**
+     * 143. 重排链表
+     * <p>
+     * 给定一个单链表 L 的头节点 head ，单链表 L 表示为：
+     * <p>
+     * L0 → L1 → … → Ln - 1 → Ln
+     * 请将其重新排列后变为：
+     * <p>
+     * L0 → Ln → L1 → Ln - 1 → L2 → Ln - 2 → …
+     * 不能只是单纯的改变节点内部的值，而是需要实际的进行节点交换。
+     *
+     * @param head
+     */
+    public void leetCode143(ListNode head) {
+        if (head == null) return;
+        //第一步 快慢指针先找中间点 slow的next即为中间点
+        ListNode slow = head;
+        ListNode fast = head;
+        while (fast.next != null && fast.next.next != null) {
+            slow = slow.next;
+            fast = fast.next.next;
+        }
+
+        //翻转后半截
+        ListNode reverse = reverse143(slow.next);
+        slow.next = null;//前半截与后半截断开
+
+        //合并前后两节
+        while (head != null && reverse != null) {
+            ListNode leftNext = head.next;
+            ListNode rightNext = reverse.next;
+
+            head.next = reverse;
+            head = leftNext;
+            reverse.next = head;
+            reverse = rightNext;
+        }
+    }
+
+    private ListNode reverse143(ListNode head) {
+        ListNode pre = null;
+        while (head != null) {
+            ListNode next = head.next;
+            head.next = pre;
+            pre = head;
+            head = next;
+        }
+        return pre;
     }
 }
