@@ -71,4 +71,16 @@ public class PartTwoLinkedListTest {
         System.out.println(head);
     }
 
+    @Test
+    void leetCode19Test() {
+        PartTwoLinkedList.ListNode listNode5 = new PartTwoLinkedList.ListNode(5, null);
+        PartTwoLinkedList.ListNode listNode4 = new PartTwoLinkedList.ListNode(4, listNode5);
+        PartTwoLinkedList.ListNode listNode3 = new PartTwoLinkedList.ListNode(3, listNode4);
+        PartTwoLinkedList.ListNode listNode2 = new PartTwoLinkedList.ListNode(2, listNode3);
+        PartTwoLinkedList.ListNode head = new PartTwoLinkedList.ListNode(1, listNode2);
+
+        PartTwoLinkedList.ListNode result = service.leetCode19(head, 2);
+        System.out.println(result);
+    }
+
 }
