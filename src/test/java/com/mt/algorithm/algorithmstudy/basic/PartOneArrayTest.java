@@ -34,7 +34,7 @@ public class PartOneArrayTest {
 
     @Test
     void leetCode904Test() {
-        int[] test = {1, 0, 3, 4, 3};
+        int[] test = {1, 0, 1, 4, 1, 4, 1, 2, 3};
         int result = service.leetCode904(test);
 
         Assertions.assertEquals(3, result);

@@ -2,10 +2,7 @@ package com.mt.algorithm.algorithmstudy.basic;
 
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @Description
@@ -213,6 +210,9 @@ public class PartOneArray {
      * @return
      */
     public int leetCode904(int[] fruits) {
+        //另一种方法
+//        return leetCode904Other1(fruits);
+
         int end = 0, begin = 0;
         int result = 0;
         Set<Integer> set = new HashSet<>();
@@ -231,6 +231,52 @@ public class PartOneArray {
             int sum = end - begin;
             result = Math.max(sum, result);
         }
+
+        return result;
+    }
+
+    /**
+     * leetCode904 另一种题解1
+     *
+     * @param fruits
+     * @return
+     */
+    private int leetCode904Other1(int[] fruits) {
+        int len = fruits.length;
+        if (len <= 2) return len;
+
+        int result = 0;
+        Deque<Integer> queue = new LinkedList<>();
+        queue.offerLast(fruits[0]);
+        int pre = fruits[0];
+        int sum = 1;
+        int left = 0;
+
+        for (int right = 1; right < fruits.length; right++) {
+            if (queue.contains(fruits[right])) {
+                sum++;
+            } else if (queue.size() < 2) {
+                sum++;
+                queue.offerLast(fruits[right]);
+            } else {
+                result = Math.max(result, sum);
+                sum = right - left + 1;
+
+                if (queue.peek() != pre) {
+                    queue.poll();
+                } else {
+                    queue.pollLast();
+                }
+                queue.offerLast(fruits[right]);
+            }
+
+            if (fruits[right] != pre) {
+                left = right;
+                pre = fruits[right];
+            }
+        }
+
+        result = Math.max(result, sum);
 
         return result;
     }
