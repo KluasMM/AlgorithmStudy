@@ -787,9 +787,11 @@ public class PartNineDp {
         dp[0] = 1;
 
         for (int j = 1; j <= target; j++) {
-            for (int num : nums) {
-                if (j >= num) {
-                    dp[j] += dp[j - num];
+            for (int i = 0; i < nums.length; i++) {
+                if (j >= nums[i]) {
+                    dp[j] += dp[j - nums[i]];
+                    System.out.printf("j=%s,i=%s,dp[%s]=dp[%s]+dp[%s],result=%s%n",
+                            j, i, j, j, j - nums[i], dp[j]);
                 }
             }
         }

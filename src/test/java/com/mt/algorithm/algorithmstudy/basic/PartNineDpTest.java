@@ -52,6 +52,13 @@ public class PartNineDpTest {
     }
 
     @Test
+    public void leetCode377Test() {
+        int[] testArr = {1, 2, 5};
+        int result = service.leetCode377(testArr, 5);
+        Assertions.assertEquals(9, result);
+    }
+
+    @Test
     public void leetCode122Test() {
         int[] testArr = {7, 1, 5, 3, 6, 4};
         int result = service.leetCode122(testArr);
